@@ -17,11 +17,29 @@ from kfp.dsl import component
 
 
 @component
-def sdg_component():
+def sdg_component(
+    mlflow_tracking_uri: str,
+    mlflow_workspace: str,
+    mlflow_tracking_token: str,
+    experiment_name: str,
+    model_url: str,
+    api_key: str = "no-key-required",
+):
     """KFP component: run the full SDG pipeline (fetch → judge → generate → save)."""
+    import os
     import shutil
     import sys
+
+    os.environ["MLFLOW_TRACKING_INSECURE_TLS"] = "true"
+    os.environ["MLFLOW_WORKSPACE"]      = mlflow_workspace
+    os.environ["MLFLOW_TRACKING_TOKEN"] = mlflow_tracking_token
+
     import sdg_pipeline.pipeline as p
+
+    p.MLFLOW_TRACKING_URI = mlflow_tracking_uri
+    p.EXPERIMENT_NAME     = experiment_name
+    p.MODEL_URL           = model_url
+    p.API_KEY             = api_key
 
     for _dir in ["./checkpoints/judge", "./checkpoints/generate", "./checkpoints/judge_synthetic"]:
         shutil.rmtree(_dir, ignore_errors=True)

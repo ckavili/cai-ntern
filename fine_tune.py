@@ -12,9 +12,10 @@ from kfp.dsl import component
 
 
 @component
-def fine_tune_component():
+def fine_tune_component(base_model: str = "Qwen/Qwen2-0.5B-Instruct"):
     """KFP component: LoRA fine-tune on training_data.csv produced by sdg_component."""
     import fine_tune
+    fine_tune.BASE_MODEL = base_model
     fine_tune.main()
 
 import re

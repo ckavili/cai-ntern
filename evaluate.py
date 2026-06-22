@@ -13,9 +13,10 @@ from kfp.dsl import component
 
 
 @component
-def evaluate_component():
+def evaluate_component(base_model: str = "Qwen/Qwen2-0.5B-Instruct"):
     """KFP component: side-by-side evaluation of base vs fine-tuned model on holdout set."""
     import evaluate
+    evaluate.BASE_MODEL = base_model
     evaluate.main()
 
 import re
